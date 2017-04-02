@@ -46,6 +46,13 @@ class Model extends Connection {
 			$order = " ORDER BY ".$this->quote($_REQUEST['sort']);
 		} elseif ($_REQUEST['jufuku'] == '1') {
 			$order = " ORDER BY `customer_name`";
+			$jufuku_field = "customer_name";
+		} elseif ($_REQUEST['jufuku'] == '2') {
+			$order = " ORDER BY `customer_phone`";
+			$jufuku_field = "customer_phone";
+		} elseif ($_REQUEST['jufuku'] == '3') {
+			$order = " ORDER BY `customer_mobile`";
+			$jufuku_field = "customer_mobile";
 		} elseif ($sort) {
 			$order = " ORDER BY ".$this->quote($sort);
 		}
@@ -61,15 +68,15 @@ class Model extends Connection {
 		if (is_array($array) && count($array) > 0) {
 			$where = "WHERE ".implode(" AND ", $array);
 		}
-		if ($_REQUEST['jufuku'] == '1') {
-			$where .= " GROUP BY `customer_name` HAVING COUNT(*) > 1";
-			$query = sprintf("SELECT `customer_name` FROM %s %s", $this->table, $where);
+		if ($_REQUEST['jufuku'] == '1' || $_REQUEST['jufuku'] == '2' || $_REQUEST['jufuku'] == '3') {
+			$where .= " AND (".$jufuku_field."<>'') GROUP BY ".$jufuku_field." HAVING COUNT(*) > 1";
+			$query = sprintf("SELECT %s FROM %s %s", $jufuku_field, $this->table, $where);
 			$jufuku_data = $this->fetchAll($query, $offset, $limit);
-			$jufuku_field = array();
+			$jufuku_list = array();
 			foreach ($jufuku_data as $key => $value) {
-			    $jufuku_field[] = sprintf('`customer_name` = "%s"', $value['customer_name']);
+				$jufuku_list[] = sprintf('%s = "%s"', $jufuku_field, $value[$jufuku_field]);
 			}
-			$where = "WHERE ".implode(" || ", $jufuku_field);
+			$where = "WHERE ".implode(" || ", $jufuku_list);
 		}
 		if (is_array($field) && count($field) > 0) {
 			$string = implode(',', $field);

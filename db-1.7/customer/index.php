@@ -43,7 +43,9 @@ if ($view->authorize('administrator', 'manager')) {
 //	echo intval($_GET['folder']).'folder';
 ?>
 
-<li><a href="index.php<?=$view->parameter(array('folder'=>$_GET['folder'],'jufuku'=>1))?>">重複顧客</a></li>
+<li><a href="index.php<?=$view->parameter(array('folder'=>$_GET['folder'],'jufuku'=>1))?>">重複(名前)</a></li>
+<li><a href="index.php<?=$view->parameter(array('folder'=>$_GET['folder'],'jufuku'=>2))?>">重複(電話)</a></li>
+<li><a href="index.php<?=$view->parameter(array('folder'=>$_GET['folder'],'jufuku'=>3))?>">重複(携帯)</a></li>
 
 <li style="color:#FF0000;">(顧客追加前に過去の顧客を検索してね！)</li>
 
